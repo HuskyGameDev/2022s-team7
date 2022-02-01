@@ -342,7 +342,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1129165158}
-  m_BodyType: 2
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -433,7 +433,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced5451a14355e94f9c832a19637d38b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  playerSpeed: 5
+  jumpPower: 5
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 8
   spear: {fileID: 7950530868801076126, guid: 7f6e33d18f83e094d8f6a35ff49a9b86, type: 3}
   spearSpeed: 600
 --- !u!1 &1278197800
@@ -494,9 +498,9 @@ GameObject:
   - component: {fileID: 1961337821}
   - component: {fileID: 1961337820}
   - component: {fileID: 1961337819}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Tilemap
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

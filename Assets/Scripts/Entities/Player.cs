@@ -7,7 +7,10 @@ public class Player : MonoBehaviour
 
     // Movement Variables
     Rigidbody2D rb;
-
+    [SerializeField] private float playerSpeed = 5.0f;
+    [SerializeField] private float jumpPower = 5.0f;
+    public LayerMask GroundLayer;
+    bool isShiftKeyDown;
     //Spear Variables
     public GameObject spear;
     bool hasSpear;
@@ -20,15 +23,23 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
-
         hasSpear = true;
         throwSpear = false;
     }
-
     // Update is called once per frame
     void Update()
     {
-        if(!throwSpear) throwSpear = Input.GetMouseButtonDown(0);
+        MovePlayer();
+        if(isShiftKeyDown = Input.GetKey(KeyCode.LeftShift))
+        {
+            dash();
+        }
+        if (Input.GetButton("Jump")) // Jump is defined in input manager
+        {
+            Jump();
+        }
+            
+        if (!throwSpear) throwSpear = Input.GetMouseButtonDown(0);
     }
 
     // FixedUpdate is called at a fixed time interval
@@ -68,5 +79,45 @@ public class Player : MonoBehaviour
         spearRB.SetRotation(rotation);
         spearRB.AddForce(slopeV.normalized * spearSpeed);
 
+    }
+    //checks if the player is going up or down. If the players y axis movement is 0 then the player is on ground
+    bool IsGrounded()
+    {
+        float GetVerticalSpeed() => rb.velocity.y; // gets the vertical speed
+        if(GetVerticalSpeed() == 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //moves player according to the horizontal key inputs. Found in edit -> project settings -> input manager 
+    private void MovePlayer()
+    {
+        var horizontalInput = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(horizontalInput * playerSpeed, rb.velocity.y);
+    }
+
+    //jumps if the player is grounded
+    private void Jump()
+    {
+        if (!IsGrounded())
+        {
+            return;
+        }
+        else
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+        }
+        
+        
+    }
+    // The player dashes in a direction with great speed. Player cannot collide with enemies while dashing
+    private void dash()
+    {
+        rb.velocity = new Vector2(rb.velocity.x * 3, rb.velocity.y);
     }
 }
