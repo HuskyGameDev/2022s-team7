@@ -11,12 +11,14 @@ public class Player : MonoBehaviour
     [SerializeField] private float jumpPower = 5.0f;
     public LayerMask GroundLayer;
     bool isShiftKeyDown;
+
     //Spear Variables
     public GameObject spear;
     bool hasSpear;
     bool throwSpear;
     public float spearSpeed;
     private Camera cam;
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,8 @@ public class Player : MonoBehaviour
         hasSpear = true;
         throwSpear = false;
     }
+
+
     // Update is called once per frame
     void Update()
     {
@@ -39,19 +43,11 @@ public class Player : MonoBehaviour
             Jump();
         }
             
-        if (!throwSpear) throwSpear = Input.GetMouseButtonDown(0);
+        if (Input.GetMouseButtonDown(0)) ThrowSpear();
     }
 
-    // FixedUpdate is called at a fixed time interval
-    private void FixedUpdate()
-    {
-        if(throwSpear)
-        {
-            throwSpear = false;
-            ThrowSpear();
-        }
-    }
 
+    // Generates a new Spear instance and throws it toward the mouse
     private void ThrowSpear()
     {
         // Gets the position of the mouse and player
@@ -61,25 +57,31 @@ public class Player : MonoBehaviour
 
         // Calculates the angle at which the spear should rotate/travel
         float slope = ((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x));
-        float rotation = Mathf.Tan((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x)) * Mathf.Rad2Deg;
+        // float rotation = Mathf.Tan((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x)) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.LookRotation(new Vector2(mousePosition.x - playerPositionWorld.x, mousePosition.y - playerPositionWorld.y));
+        rotation.z = (mousePosition.x < playerPositionWorld.x) ? rotation.x : -rotation.x;
+        rotation.y = 0;
+        rotation.x = 0;
         Vector2 slopeV = new Vector2(1, slope);
 
         Debug.Log("rotation: " + rotation);
 
         // Instantiates the spear and applies rotation + force
-        GameObject thrownSpear = Instantiate(spear, playerPosition, Quaternion.identity);
+        GameObject thrownSpear = Instantiate(spear, playerPosition, rotation); // Quaternion.identity
         Rigidbody2D spearRB = thrownSpear.GetComponent<Rigidbody2D>();
         SpriteRenderer spearSprite = thrownSpear.GetComponent<SpriteRenderer>();
         if (mousePosition.x < playerPositionWorld.x) // Adjusts certain variables if the spear is thrown on the left side of the screen
         {
             slopeV *= -1;
-            rotation += 180;
+            thrownSpear.transform.Rotate(new Vector3(0, 0, 180));
             spearSprite.flipY = false;
         }
         spearRB.SetRotation(rotation);
         spearRB.AddForce(slopeV.normalized * spearSpeed);
 
     }
+
+
     //checks if the player is going up or down. If the players y axis movement is 0 then the player is on ground
     bool IsGrounded()
     {
@@ -94,12 +96,14 @@ public class Player : MonoBehaviour
         }
     }
 
+
     //moves player according to the horizontal key inputs. Found in edit -> project settings -> input manager 
     private void MovePlayer()
     {
         var horizontalInput = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(horizontalInput * playerSpeed, rb.velocity.y);
     }
+
 
     //jumps if the player is grounded
     private void Jump()
@@ -115,6 +119,8 @@ public class Player : MonoBehaviour
         
         
     }
+
+
     // The player dashes in a direction with great speed. Player cannot collide with enemies while dashing
     private void dash()
     {
