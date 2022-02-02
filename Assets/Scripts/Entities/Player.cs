@@ -57,7 +57,6 @@ public class Player : MonoBehaviour
 
         // Calculates the angle at which the spear should rotate/travel
         float slope = ((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x));
-        // float rotation = Mathf.Tan((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x)) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.LookRotation(new Vector2(mousePosition.x - playerPositionWorld.x, mousePosition.y - playerPositionWorld.y));
         rotation.z = (mousePosition.x < playerPositionWorld.x) ? rotation.x : -rotation.x;
         rotation.y = 0;
@@ -67,7 +66,7 @@ public class Player : MonoBehaviour
         Debug.Log("rotation: " + rotation);
 
         // Instantiates the spear and applies rotation + force
-        GameObject thrownSpear = Instantiate(spear, playerPosition, rotation); // Quaternion.identity
+        GameObject thrownSpear = Instantiate(spear, playerPosition, rotation);
         Rigidbody2D spearRB = thrownSpear.GetComponent<Rigidbody2D>();
         SpriteRenderer spearSprite = thrownSpear.GetComponent<SpriteRenderer>();
         if (mousePosition.x < playerPositionWorld.x) // Adjusts certain variables if the spear is thrown on the left side of the screen
