@@ -58,12 +58,11 @@ public class Player : MonoBehaviour
         // Calculates the angle at which the spear should rotate/travel
         float slope = ((mousePosition.y - playerPositionWorld.y) / (mousePosition.x - playerPositionWorld.x));
         Quaternion rotation = Quaternion.LookRotation(new Vector2(mousePosition.x - playerPositionWorld.x, mousePosition.y - playerPositionWorld.y));
+        // Fixes the quaternion (Because Unity hates me and puts stuff on the wrong axes because the LookRotation method was designed for 3D space...)
         rotation.z = (mousePosition.x < playerPositionWorld.x) ? rotation.x : -rotation.x;
         rotation.y = 0;
         rotation.x = 0;
         Vector2 slopeV = new Vector2(1, slope);
-
-        Debug.Log("rotation: " + rotation);
 
         // Instantiates the spear and applies rotation + force
         GameObject thrownSpear = Instantiate(spear, playerPosition, rotation);
@@ -75,6 +74,7 @@ public class Player : MonoBehaviour
             thrownSpear.transform.Rotate(new Vector3(0, 0, 180));
             spearSprite.flipY = false;
         }
+
         spearRB.SetRotation(rotation);
         spearRB.AddForce(slopeV.normalized * spearSpeed);
 
