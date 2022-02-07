@@ -10,7 +10,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float jumpPower = 5.0f;
     public LayerMask GroundLayer;
-    bool isShiftKeyDown;
+
+    //dash variables
+    private float dashSpeed = 3;
+    private float dashTime = 0.5f; // how long the dash lasts for
+    private Coroutine dodging;
 
     //Spear Variables
     public GameObject spear;
@@ -34,10 +38,11 @@ public class Player : MonoBehaviour
     void Update()
     {
         MovePlayer();
-        if(isShiftKeyDown = Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dodging == null)
         {
-            dash();
+            dodging = StartCoroutine(Dash());
         }
+        
         if (Input.GetButton("Jump")) // Jump is defined in input manager
         {
             Jump();
@@ -121,8 +126,15 @@ public class Player : MonoBehaviour
 
 
     // The player dashes in a direction with great speed. Player cannot collide with enemies while dashing
-    private void dash()
+    private IEnumerator Dash()
     {
-        rb.velocity = new Vector2(rb.velocity.x * 3, rb.velocity.y);
+        var endOfFrame = new WaitForEndOfFrame();
+
+        for (float timer = 0; timer < dashTime; timer += Time.deltaTime)
+        {
+            rb.velocity = new Vector2(rb.velocity.x * dashSpeed, rb.velocity.y);
+            yield return endOfFrame;
+        }
+        dodging = null;
     }
 }
