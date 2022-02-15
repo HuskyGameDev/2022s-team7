@@ -18,11 +18,10 @@ public class Player : MonoBehaviour
 
     //Spear Variables
     public GameObject spear;
-    bool hasSpear;
-    bool throwSpear;
+    private static bool hasSpear;
     [SerializeField] float spearSpeed;
     private Camera cam;
-    [SerializeField] float offset;
+    [SerializeField] float offset; // The offset amount at which the spear spawns (vertical offset)
 
 
     // Start is called before the first frame update
@@ -31,7 +30,6 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         hasSpear = true;
-        throwSpear = false;
     }
 
 
@@ -49,7 +47,7 @@ public class Player : MonoBehaviour
             Jump();
         }
             
-        if (Input.GetMouseButtonDown(0)) ThrowSpear();
+        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && hasSpear) ThrowSpear();
     }
 
 
@@ -83,7 +81,7 @@ public class Player : MonoBehaviour
 
         spearRB.SetRotation(rotation);
         spearRB.AddForce(slopeV.normalized * spearSpeed);
-
+        hasSpear = false;
     }
 
 
@@ -137,5 +135,10 @@ public class Player : MonoBehaviour
             yield return endOfFrame;
         }
         dodging = null;
+    }
+
+    public static void ReturnSpear()
+    {
+        hasSpear = true;
     }
 }

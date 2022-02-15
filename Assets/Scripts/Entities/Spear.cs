@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Spear : MonoBehaviour
+public class Spear : MonoBehaviour, IPointerClickHandler
 {
     Rigidbody2D rb;
     bool impact; // Keeps track of whether or not the spear has already impacted something.
@@ -10,6 +11,8 @@ public class Spear : MonoBehaviour
     float angle = 40; // Angle to freeze the spear
     bool rotateSpear = false; // Whether or not the spear should be rotating toward the ground
     bool rotated = false; // Whether or not the spear has been successfully rotated
+    bool freeze = true;
+    bool canPickUp = false; // Whether or not the player can pick up the spear
     float prevAngle;
     float curAngle;
 
@@ -32,6 +35,7 @@ public class Spear : MonoBehaviour
             if (Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground")) && withinRotation)
             {
                 // Debug.DrawRay(transform.position, transform.right * 1.15f, Color.yellow, Mathf.Infinity, false); // Can be used to see the ray (turn gizmos on)
+                canPickUp = true;
                 rb.bodyType = RigidbodyType2D.Static;
                 gameObject.layer = 3;
             }
@@ -41,10 +45,13 @@ public class Spear : MonoBehaviour
                 rotateSpear = true;
                 prevAngle = (transform.rotation.eulerAngles.z + 90) % 360; // Stores the angle of the spear
                 impact = true;
+                freeze = false;
             }
         } else if (Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground")) && rotated)
         {
+            // Freezes the spear if the tip hits the ground
             rb.bodyType = RigidbodyType2D.Static;
+            canPickUp = true;
         }
         
     }
@@ -75,6 +82,31 @@ public class Spear : MonoBehaviour
             rotateSpear = false;
             rb.freezeRotation = true;
             rotated = true;
+        }
+
+        // If the y velocity of the spear is 0 and the spear is not rotated properly, freeze it (edge case control) (sorry for the mess of an if statement)
+        if(rb.velocity.y == 0 && !rotated && !freeze && (rb.velocity.x == 0 || rotateSpear) && !Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground")))
+        {
+            rb.bodyType = RigidbodyType2D.Static;
+            canPickUp = true;
+            freeze = true;
+        }
+
+        // If the spear is rotated + frozen but not static, fix it (debugging / edge case)
+        if(!canPickUp && rotated && rb.velocity == Vector2.zero)
+        {
+            canPickUp = true;
+            rb.bodyType = RigidbodyType2D.Static;
+        }
+    }
+
+    // Gets called whenever the spear is clicked on
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if(canPickUp)
+        {
+            Player.ReturnSpear();
+            Destroy(gameObject);
         }
     }
 }
