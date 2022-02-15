@@ -20,8 +20,9 @@ public class Player : MonoBehaviour
     public GameObject spear;
     bool hasSpear;
     bool throwSpear;
-    public float spearSpeed;
+    [SerializeField] float spearSpeed;
     private Camera cam;
+    [SerializeField] float offset;
 
 
     // Start is called before the first frame update
@@ -70,7 +71,7 @@ public class Player : MonoBehaviour
         Vector2 slopeV = new Vector2(1, slope);
 
         // Instantiates the spear and applies rotation + force
-        GameObject thrownSpear = Instantiate(spear, playerPosition, rotation);
+        GameObject thrownSpear = Instantiate(spear, playerPosition + new Vector2(0, offset), rotation);
         Rigidbody2D spearRB = thrownSpear.GetComponent<Rigidbody2D>();
         SpriteRenderer spearSprite = thrownSpear.GetComponent<SpriteRenderer>();
         if (mousePosition.x < playerPositionWorld.x) // Adjusts certain variables if the spear is thrown on the left side of the screen
