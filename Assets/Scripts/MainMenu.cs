@@ -28,6 +28,11 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("scene_Game-1-2");
     }
 
+    public void LevelOneDashThree()
+    {
+        SceneManager.LoadScene("scene_Game-1-3");
+    }
+
     // When quit is pressed anywhere in the game, the app closes
     public void Quit ()
     {
