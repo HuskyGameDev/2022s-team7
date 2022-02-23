@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
 
     // Movement Variables
-    Rigidbody2D rb;
+    private static Rigidbody2D rb;
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float jumpPower = 5.0f;
     public LayerMask GroundLayer;
@@ -140,5 +140,10 @@ public class Player : MonoBehaviour
     public static void ReturnSpear()
     {
         hasSpear = true;
+    }
+
+    public static Vector2 getPosition()
+    {
+        return rb.position;
     }
 }
