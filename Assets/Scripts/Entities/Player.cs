@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
 
     //dash variables
     private float dashSpeed = 3;
-    private float dashTime = 0.5f; // how long the dash lasts for
+    private float dashTime = 0.3f; // how long the dash lasts for
     private Coroutine dodging;
 
     //Spear Variables
@@ -89,7 +89,7 @@ public class Player : MonoBehaviour
     bool IsGrounded()
     {
         float GetVerticalSpeed() => rb.velocity.y; // gets the vertical speed
-        if(GetVerticalSpeed() == 0)
+        if((GetVerticalSpeed() < 0.001) & (GetVerticalSpeed() > -0.001))
         {
             return true;
         }
@@ -128,10 +128,18 @@ public class Player : MonoBehaviour
     private IEnumerator Dash()
     {
         var endOfFrame = new WaitForEndOfFrame();
-
+        float accelr;
+		int holdDir = 1;
+		if (rb.velocity.x < 0) { // Implements unidirectionality of the sprint: player cannot change directions midsprint
+			holdDir = -1;
+		}
         for (float timer = 0; timer < dashTime; timer += Time.deltaTime)
         {
-            rb.velocity = new Vector2(rb.velocity.x * dashSpeed, rb.velocity.y);
+			accelr = (timer / (dashTime/4));  //Acceleration script. Player reaches full speed 25% through the dash.
+			if (accelr > 1) {
+				accelr = 1;
+			}
+            rb.velocity = new Vector2(Mathf.Abs(rb.velocity.x * dashSpeed * accelr) * holdDir, rb.velocity.y);
             yield return endOfFrame;
         }
         dodging = null;
