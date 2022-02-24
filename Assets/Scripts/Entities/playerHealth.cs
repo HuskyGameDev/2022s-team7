@@ -12,16 +12,25 @@ public class playerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+		InitializeHealth();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (health > numHearts)
+	public void Heal(int healDone) {
+		health = health + healDone;
+		HealthUpdate();
+	}
+    public void Damage(int damageDone) {
+		health = health - damageDone;
+		HealthUpdate();
+	}
+    // Update is called on change.
+    void HealthUpdate() {
+		 if (health > numHearts)
         {
             health = numHearts;
         }
+		if (health <= 0) {
+			Die();
+		}
         for (int i = 0; i < hearts.Length; i++)
         {
             if (i < health)
@@ -41,5 +50,19 @@ public class playerHealth : MonoBehaviour
                 hearts[i].enabled = false;
             }
         }
+	}
+	// Initiazes, full heal. Called at beginning of each level or on special healing item effect.
+	public void InitializeHealth() {
+		health = 3;
+		numHearts = 3;
+	}
+	// Doesn't need to be called. Health only needs to be updated on damage or heal event, not checked each frame. Frees up some CPU.
+	void Update()
+    {
+       
     }
+	// Called on death. Don't think we have a death screen/protocol yet, need to be discussed with team.
+	void Die() {
+		//Empty
+	}
 }

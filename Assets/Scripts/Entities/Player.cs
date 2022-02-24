@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private float dashSpeed = 3;
     private float dashTime = 0.3f; // how long the dash lasts for
     private Coroutine dodging;
-
+	public playerHealth playerh;
     //Spear Variables
     public GameObject spear;
     private static bool hasSpear;
@@ -30,8 +30,8 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         hasSpear = true;
+		playerh = new playerHealth();
     }
-
 
     // Update is called once per frame
     void Update()
