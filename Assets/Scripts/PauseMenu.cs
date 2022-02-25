@@ -10,41 +10,49 @@ using UnityEngine.SceneManagement;
 // 2) https://www.youtube.com/watch?v=YOaYQrN1oYQ
 // 3) https://www.youtube.com/watch?v=JivuXdrIHK0
 // 4) https://docs.unity3d.com/ScriptReference/SceneManagement.Scene-name.html
+// 5) https://www.youtube.com/watch?v=eC05j7rh_LM
 public class PauseMenu : MonoBehaviour {
 
-    public GameObject PauseMenuUI;
-    public static bool GameIsPaused = false;
+    public static bool isGamePaused = false;
 
-   void Update () {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
-            if (GameIsPaused){
-                Resume();
+    [SerializeField] GameObject pauseMenu;
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)){
+            if (isGamePaused){
+                ResumeGame();
             } else {
-                Pause();
+                PauseGame();
             }
         }
-   }
-
-   public void Resume (){
-       PauseMenuUI.SetActive(false);
-       Time.timeScale = 1f;
-       GameIsPaused = false;
     }
 
-   void Pause () {
-       PauseMenuUI.SetActive(true);
-       Time.timeScale = 0f;
-       GameIsPaused = true;
+    void ResumeGame() {
+        pauseMenu.SetActive(false);
+        Time.timeScale = 1;
+        isGamePaused = false;
+    }
+
+    void PauseGame() {
+        pauseMenu.SetActive(true);
+        Time.timeScale = 0f;
+        isGamePaused = true;
     }
 
     // In the in game pause menu, the user is taken to the home screen with this button
     public void Home () {
-        // public static bool GameIsPaused = false;
+        ResumeGame();
         SceneManager.LoadScene("scene_MainMenu");
     }
 
     // When quit is pressed anywhere in the game, the app closes
-    public void Quit () {
+    public void Quit ()
+    {
+    ResumeGame();
+    #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
         Application.Quit ();
+    #endif
     }
 }
