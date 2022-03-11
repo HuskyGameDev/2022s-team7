@@ -15,13 +15,11 @@ public class Flamehead : MonoBehaviour
     [SerializeField] bool direction; // The direction of travel. False is left, True is right.
     [SerializeField] float minOffset;
     [SerializeField] float maxOffset;
-    float prevX;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        prevX = transform.position.x;
         UpdateTarget();
     }
 
@@ -48,6 +46,11 @@ public class Flamehead : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // 6 corresponds to the "Weapon" layer, so the if statement is checking if the Flamehead has collided with a weapon
+        if(collision.gameObject.layer == 6 && collision.gameObject.GetComponent<Spear>().getTipCollision(gameObject))
+        {
+            Destroy(gameObject);
+        }
         if(Physics2D.Raycast(transform.position, Vector2.right, 1.15f, LayerMask.GetMask("Ground")))
         {
             rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
@@ -64,13 +67,13 @@ public class Flamehead : MonoBehaviour
         target = UpdateTarget();
     }
 
-     /** 
-     * Updates the velocity of the Flamehead
-     * This method exists only for code organization
-     * It's such a mess of if statements, but I couldn't figure out any other way to do this
-     * BUT HEY IT WORKS
-     * I sincerely apologize to anyone who has to try and update this
-     **/
+    /** 
+    * Updates the velocity of the Flamehead
+    * This method exists only for code organization
+    * It's such a mess of if statements, but I couldn't figure out any other way to do this
+    * BUT HEY IT WORKS
+    * I sincerely apologize to anyone who has to try and update this
+    **/
     private void UpdateVelocity()
     {
         /****** X VELOCITY ******/

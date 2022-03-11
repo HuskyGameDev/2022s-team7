@@ -15,6 +15,7 @@ public class Spear : MonoBehaviour, IPointerClickHandler
     bool canPickUp = false; // Whether or not the player can pick up the spear
     float prevAngle;
     float curAngle;
+    bool tipcollsion; // Checks whether the tip is currently colliding with something (for use by other scripts)
 
     void Start()
     {
@@ -31,7 +32,7 @@ public class Spear : MonoBehaviour, IPointerClickHandler
 
         if (!impact)
         {
-            // Casts a ray to check if the tip of the spear is colliding with the ground
+            // Casts a ray to check if the tip of the spear is colliding with the ground & within rotation margin. If so, turns spear into a platform
             if (Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground")) && withinRotation)
             {
                 // Debug.DrawRay(transform.position, transform.right * 1.15f, Color.yellow, Mathf.Infinity, false); // Can be used to see the ray (turn gizmos on)
@@ -41,6 +42,11 @@ public class Spear : MonoBehaviour, IPointerClickHandler
             }
             else
             {
+                // If the spear has collided with an Enemy (layer 8 == enemy layer)
+                if(collision.gameObject.layer == 8)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x / 5.0f, rb.velocity.y / 5.0f);
+                }
                 // Debug.DrawRay(transform.position, transform.right * 1.15f, Color.white, Mathf.Infinity, false); // Can be used to see the ray (turn gizmos on)
                 rotateSpear = true;
                 prevAngle = (transform.rotation.eulerAngles.z + 90) % 360; // Stores the angle of the spear
@@ -107,6 +113,22 @@ public class Spear : MonoBehaviour, IPointerClickHandler
         {
             Player.ReturnSpear();
             Destroy(gameObject);
+        }
+    }
+
+    public bool getTipCollision(GameObject obj)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground", "Enemy"));
+        if(hit.transform == null)
+        {
+            return false;
+        }
+        if(hit.transform.gameObject.Equals(obj) && rb.velocity.magnitude > 0)
+        {
+            return true;
+        } else
+        {
+            return false;
         }
     }
 }
