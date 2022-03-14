@@ -15,14 +15,14 @@ public class Player : MonoBehaviour
     private float dashSpeed = 3;
     private float dashTime = 0.3f; // how long the dash lasts for
     private Coroutine dodging;
-	public playerHealth playerh;
     //Spear Variables
     public GameObject spear;
     private static bool hasSpear;
     [SerializeField] float spearSpeed;
     private Camera cam;
     [SerializeField] float offset; // The offset amount at which the spear spawns (vertical offset)
-
+    //Health management
+    public playerHealth hp; // instance of the hp on the level linked to the player.
 
     // Start is called before the first frame update
     void Start()
@@ -30,7 +30,6 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         hasSpear = true;
-		playerh = new playerHealth();
     }
 
     // Update is called once per frame
@@ -153,5 +152,18 @@ public class Player : MonoBehaviour
     public static Vector2 getPosition()
     {
         return rb.position;
+    }
+
+    //handles all hit detection for the player
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //basic checking if colliding ith an enemy. The layer can be changed for higher amunts of damage once done.
+        if(collision.gameObject.layer == 8)
+        {
+            Debug.Log("hit");
+            hp.Damage(1);
+        }
+        
+        
     }
 }

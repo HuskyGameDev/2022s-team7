@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+
+//generic class for having the moving platforms.
 public class waypointFollower : MonoBehaviour
 {
     [SerializeField] private GameObject[] waypoints;
     private int currentWaypointIndex = 0;
     [SerializeField] private float speed = 2f;
-    private GameObject lever;
+    public GameObject platform;
 
-    private void Update()
+        private void Update()
     {
         /*
          * for moving back & forth
@@ -22,16 +24,18 @@ public class waypointFollower : MonoBehaviour
                 currentWaypointIndex = 0;
             }
         }*/
-        activate();
-        transform.position = Vector2.MoveTowards(transform.position, waypoints[currentWaypointIndex].transform.position, Time.deltaTime * speed);
+       //Basic move from point a to point b based on a trigger.
+            platform.transform.position = Vector2.MoveTowards(platform.transform.position, waypoints[currentWaypointIndex].transform.position, Time.deltaTime * speed);
     }
 
-    public void activate()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
+
+    //spear activating lever is intentional. Changes the trigger to activate the lever pull form player & spear.
+    private void OnTriggerEnter2D(Collider2D collision)
+    {  
+        if(collision.gameObject.layer == 7 || collision.gameObject.layer == 6)
         {
             currentWaypointIndex = 1;
-            
         }
     }
+
 }
