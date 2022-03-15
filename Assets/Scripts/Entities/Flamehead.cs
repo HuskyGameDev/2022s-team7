@@ -20,7 +20,6 @@ public class Flamehead : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        UpdateTarget();
     }
 
     // Update is called once per frame
@@ -147,7 +146,6 @@ public class Flamehead : MonoBehaviour
 
     private Vector2 UpdateTarget()
     {
-        Debug.Log("retargeting");
         float xTarget;
         float yTarget;
         direction = !direction;
