@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class playerHealth : MonoBehaviour
 {
     public int health;
@@ -62,7 +63,8 @@ public class playerHealth : MonoBehaviour
        
     }
 	// Called on death. Don't think we have a death screen/protocol yet, need to be discussed with team.
-	void Die() {
-		//Empty
+	void Die() 
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
 }

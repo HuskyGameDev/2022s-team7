@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float playerSpeed = 5.0f;
     [SerializeField] private float jumpPower = 5.0f;
     public LayerMask GroundLayer;
-
     //dash variables
     private float dashSpeed = 3;
     private float dashTime = 0.3f; // how long the dash lasts for
@@ -21,8 +20,9 @@ public class Player : MonoBehaviour
     [SerializeField] float spearSpeed;
     private Camera cam;
     [SerializeField] float offset; // The offset amount at which the spear spawns (vertical offset)
-    //Health management
+    //Player management
     public playerHealth hp; // instance of the hp on the level linked to the player.
+    public static Vector2 lastCheckpoint = new Vector2(0,0);
 
     // Start is called before the first frame update
     void Start()
@@ -30,8 +30,14 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         hasSpear = true;
+        GameObject.FindGameObjectWithTag("Player").transform.position = lastCheckpoint;
     }
-
+    /*
+    private void Awake()
+    {
+        GameObject.FindGameObjectWithTag("Player").transform.position = lastCheckpoint;
+    }
+    */
     // Update is called once per frame
     void Update()
     {
@@ -160,10 +166,17 @@ public class Player : MonoBehaviour
         //basic checking if colliding ith an enemy. The layer can be changed for higher amunts of damage once done.
         if(collision.gameObject.layer == 8)
         {
-            Debug.Log("hit");
             hp.Damage(1);
         }
         
         
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer == 8)
+        {
+            hp.Damage(1);
+        }
+    }
+
 }
