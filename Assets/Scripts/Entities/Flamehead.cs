@@ -6,7 +6,6 @@ public class Flamehead : MonoBehaviour
 {
 
     Vector2 target;
-    bool getTarget;
     [SerializeField] float error;
     Rigidbody2D rb;
     [SerializeField] float maxVelocity; // The maximum velocity at which the flamehead can move
@@ -22,22 +21,12 @@ public class Flamehead : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        getTarget = true;
-    }
-
     private void FixedUpdate()
     {
         // If the flamehead is vaguely near the target, retarget
         if (Mathf.Abs(transform.position.x - target.x) < error && Mathf.Abs(transform.position.y - target.y) < error)
         {
             target = UpdateTarget();
-            getTarget = false;
-        } else
-        {
-            getTarget = true;
         }
 
         UpdateVelocity();

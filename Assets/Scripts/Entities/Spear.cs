@@ -118,7 +118,7 @@ public class Spear : MonoBehaviour, IPointerClickHandler
 
     public bool getTipCollision(GameObject obj)
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground", "Enemy"));
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 1.25f, LayerMask.GetMask("Ground", "Enemy"));
         if(hit.transform == null)
         {
             return false;
