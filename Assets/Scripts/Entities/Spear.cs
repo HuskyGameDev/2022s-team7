@@ -42,8 +42,8 @@ public class Spear : MonoBehaviour, IPointerClickHandler
             }
             else
             {
-                // If the spear has collided with an Enemy (layer 8 == enemy layer)
-                if(collision.gameObject.layer == 8)
+                // If the spear has collided with an Enemy (layers 8 & 9 == enemy layers)
+                if(collision.gameObject.layer == 8 || collision.gameObject.layer == 9)
                 {
                     rb.velocity = new Vector2(rb.velocity.x / 5.0f, rb.velocity.y / 5.0f);
                 }

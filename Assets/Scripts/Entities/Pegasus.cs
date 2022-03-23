@@ -34,7 +34,7 @@ public class Pegasus : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         withinRadius = false;
-        attackTimer = attackCooldown;
+        attackTimer = attackCooldown / 2;
         attackLength = (radius * 2) / attackSpeed;
         attacking = false;
         attackTarget = Vector2.zero;
