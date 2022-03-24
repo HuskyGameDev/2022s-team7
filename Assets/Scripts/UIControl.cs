@@ -10,28 +10,37 @@ using UnityEngine.SceneManagement;
 // 2) https://www.youtube.com/watch?v=YOaYQrN1oYQ
 // 3) https://www.youtube.com/watch?v=JivuXdrIHK0
 // 4) https://docs.unity3d.com/ScriptReference/SceneManagement.Scene-name.html
-public class MainMenu : MonoBehaviour
+public class UIControl : MonoBehaviour
 {
     
+    public Animator transition;
+
     // When TestLevel is pressed, we take the user to the testing level
     public void Testing () {
-        SceneManager.LoadScene("scene_LevelTesting");
+        StartCoroutine(LoadLevel("L1-T"));
     }
 
         // When TestLevel is pressed, we take the user to the game world
     public void LevelOne () {
-        SceneManager.LoadScene("scene_Game");
+        StartCoroutine(LoadLevel("L1-1"));
     }
 
     public void LevelOneDashTwo()
     {
-        SceneManager.LoadScene("scene_Game-1-2");
+        StartCoroutine(LoadLevel("L1-2"));
     }
 
     public void LevelOneDashThree()
     {
-        SceneManager.LoadScene("scene_Game-1-3");
+        StartCoroutine(LoadLevel("L1-3"));
     }
+
+    IEnumerator LoadLevel (string level)
+    {
+        transition.SetTrigger("fadeOut");
+        SceneManager.LoadScene(level);
+         yield return new WaitForSeconds(1);        
+             }
 
     // When quit is pressed anywhere in the game, the app closes
     public void Quit ()
