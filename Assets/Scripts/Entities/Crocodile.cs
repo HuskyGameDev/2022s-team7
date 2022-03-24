@@ -15,15 +15,22 @@ public class Crocodile : MonoBehaviour
     [SerializeField] int health; // hits required to kill the pegasus
     float invincibility = 2; // Seconds of invincibility after each hit
     float invincibilityTimer;
+	Vector2 target;
     float accelerationRate = 0.06f;
-    float attackAccelerationRate = 0.30f;
-	boolean velRSwitch = false;
-	boolean velYSwitch = false;
-	float initialVel = rb.velocity.x;
+	[SerializeField] float maxVelocity; // The maximum velocity at which the flamehead can move
+    float minVelocity = 1;
+	bool velRSwitch = false;
+	bool velLSwitch = false;
+	[SerializeField] float adjust; // The amount by which to multiply/divide the velocity (MUST be greater than 1 and smaller than maxVelocity)
+    [SerializeField] bool direction; // The direction of travel. False is left, True is right.
+    [SerializeField] float minOffset;
+    [SerializeField] float maxOffset;
+	float initialVel; // Likely going to be zero, but created a variable for flexibility
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+		initialVel = rb.velocity.x;
     }
 	    
 	private void FixedUpdate()
@@ -41,7 +48,7 @@ public class Crocodile : MonoBehaviour
         if (target.x < rb.position.x && (rb.velocity.magnitude < maxVelocity || rb.velocity.x > 0))
         {
 			if (velRSwitch){
-				rb.velocity.x = initialVel;
+				rb.velocity = new Vector2(initialVel, rb.velocity.y);
 			}
             if (rb.velocity.x > minVelocity) // If the velocity is positive, but should be negative
             {
@@ -62,7 +69,7 @@ public class Crocodile : MonoBehaviour
         else if (target.x > rb.position.x && (rb.velocity.magnitude < maxVelocity || rb.velocity.x < 0))
         {
 			if (velLSwitch){
-				rb.velocity.x = initialVel;
+				rb.velocity = new Vector2(initialVel, rb.velocity.y);
 			}
             if (rb.velocity.x > minVelocity) // If the velocity is positive, but needs to be larger
             {

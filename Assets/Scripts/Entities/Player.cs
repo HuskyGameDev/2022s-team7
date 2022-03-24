@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         cam = Camera.main;
         hasSpear = true;
-        GameObject.FindGameObjectWithTag("Player").transform.position = lastCheckpoint;
+        gameObject.transform.position = lastCheckpoint;
     }
     /*
     private void Awake()
