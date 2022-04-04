@@ -163,13 +163,17 @@ public class Player : MonoBehaviour
     //handles all hit detection for the player
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //basic checking if colliding ith an enemy. The layer can be changed for higher amunts of damage once done.
+        //basic checking if colliding with an enemy. The layer can be changed for higher amunts of damage once done.
         if(collision.gameObject.layer == 8)
         {
             hp.Damage(1);
         }
         
-        
+        //enviormental damage(killboxes for out of bounds or instant death traps)
+        if (collision.gameObject.layer == 11)
+            {
+                hp.Damage(3);
+            }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
