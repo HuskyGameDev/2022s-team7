@@ -7,6 +7,7 @@ public class Spike : MonoBehaviour
 {
 	Rigidbody2D rb;
 	bool colli;
+    public playerHealth hp; // instance of the hp on the level linked to the player.
     // Start is called before the first frame update
     void Start()
     {
@@ -17,9 +18,8 @@ public class Spike : MonoBehaviour
     {
         // Gets the rotation value of the spear and checks if it's wihin +/- angle degrees of horizontal
         if (collision.gameObject.tag == "Player") {
-			// Player.playerh.Damage(1);
-			// To be implemented once player instantiation is finished
-		}
+            hp.Damage(3);
+        }
         
     }
     // Update is called once per frame
