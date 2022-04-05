@@ -5,56 +5,108 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    // Movement Variables
+    // ========== MOVEMENT ========== //
     private static Rigidbody2D rb;
+    private int lookDirection = 1; // 1 is looking to the right, -1 is looking to the left
     [SerializeField] private float playerSpeed = 5.0f;
-    [SerializeField] private float jumpPower = 5.0f;
     public LayerMask GroundLayer;
-    //dash variables
-    private float dashSpeed = 3;
-    private float dashTime = 0.3f; // how long the dash lasts for
-    private Coroutine dodging;
-    //Spear Variables
+    private float vX = 0;
+    private float vY = 0;
+
+    // ========== DASH ========== //
+    [SerializeField] private float dashSpeed = 8.0f;
+    [SerializeField] private float dashCooldown = 1f;
+    private float dashCooldownTimer = 0;
+    private float dashLength = 0.3f; // how long the dash lasts for
+    private float dashTimer = 0;
+    private bool dashing = false;
+    private float dashAccel = 0.1f;
+
+    // ========== JUMP ========== //
+    Collider2D collider;
+    [SerializeField] float fallMultiplier = 2.5f; // The multiplier to increase the fall speed
+    [SerializeField] float lowJumpMultiplier = 2f; // The multiplier to increase the fall speed when the player ends the jump early
+    [SerializeField] float jumpVelocity = 5f; // The initial velocity of the jump
+    [SerializeField] float gravity = 3f; // The gravity multiplier
+     float contactDistance = 0.1f; // Length of the raycast to look for ground
+    
+    bool jumpButtonHeld = false;
+    bool jumpButtonPressed = false;
+
+    // ========== SPEAR ========== //
     public GameObject spear;
     private static bool hasSpear;
     [SerializeField] float spearSpeed;
     private Camera cam;
     [SerializeField] float offset; // The offset amount at which the spear spawns (vertical offset)
-    //Player management
+
+    // ========== MANAGEMENT ========== //
     public playerHealth hp; // instance of the hp on the level linked to the player.
     public static Vector2 lastCheckpoint = new Vector2(0,0);
+
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        collider = GetComponent<Collider2D>();
         cam = Camera.main;
         hasSpear = true;
         gameObject.transform.position = lastCheckpoint;
+        rb.gravityScale = gravity;
     }
-    /*
-    private void Awake()
-    {
-        GameObject.FindGameObjectWithTag("Player").transform.position = lastCheckpoint;
-    }
-    */
+
     // Update is called once per frame
     void Update()
     {
-        MovePlayer();
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dodging == null)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashCooldownTimer <= 0)
         {
-            dodging = StartCoroutine(Dash());
-        }
-        
-        if (Input.GetButton("Jump")) // Jump is defined in input manager
-        {
-            Jump();
+            if(!dashing) {
+                dashTimer = dashLength;
+                rb.gravityScale = 0;
+            }
+            Dash();
         }
             
         if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && hasSpear) ThrowSpear();
+
+        //Detects if the button to jump is being held, and updates the boolean.
+        if (Input.GetButton("Jump"))
+        {
+            jumpButtonHeld = true;
+        }
+        else
+        {
+            jumpButtonHeld = false;
+        }
+        //Detects if the button to jump has been pressed and the player is not currently moving vertically, and updates the boolean.
+        //if (Input.GetButtonDown("Jump") && Mathf.Approximately(rb.velocity.y, 0))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
+        {
+            jumpButtonPressed = true;
+        }
+
+        // Timers
+
+        if(dashCooldownTimer > 0) dashCooldownTimer -= Time.deltaTime;
+        if (dashTimer > 0) dashTimer -= Time.deltaTime;
     }
 
+    private void FixedUpdate()
+    {
+        if (!dashing)
+        {
+            // Updates vertical velocity if jumping
+            Jump();
+
+            // Moves the player horizontally depending on user input
+            MovePlayer();
+        } else
+        {
+            Dash();
+        }
+    }
 
     // Generates a new Spear instance and throws it toward the mouse
     private void ThrowSpear()
@@ -93,15 +145,21 @@ public class Player : MonoBehaviour
     //checks if the player is going up or down. If the players y axis movement is 0 then the player is on ground
     bool IsGrounded()
     {
-        float GetVerticalSpeed() => rb.velocity.y; // gets the vertical speed
-        if((GetVerticalSpeed() < 0.001) & (GetVerticalSpeed() > -0.001))
+        ContactFilter2D filter2D = new ContactFilter2D();
+        filter2D.useTriggers = false;
+
+        //Casts a ray to check if there is anything immediatly below the player
+        RaycastHit2D[] results = new RaycastHit2D[10];
+        collider.Cast(Vector2.down, filter2D, results, contactDistance);
+
+        foreach (RaycastHit2D hit in results)
         {
-            return true;
+            if (hit.collider != null)
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
 
@@ -110,44 +168,50 @@ public class Player : MonoBehaviour
     {
         var horizontalInput = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(horizontalInput * playerSpeed, rb.velocity.y);
+        lookDirection = rb.velocity.x < 0 ? -1 : 1;
     }
 
 
     //jumps if the player is grounded
     private void Jump()
     {
-        if (!IsGrounded())
+        if (jumpButtonPressed)
         {
-            return;
+            rb.velocity = Vector2.up * jumpVelocity;
+            jumpButtonPressed = false;
         }
-        else
+        //Adjusts the player's downward velocity during a jump
+        if (rb.velocity.y < 0) //If the player is falling
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        
-        
+        else if (rb.velocity.y > 0 && !jumpButtonHeld) //If the player is moving upward, but the jump button is not pressed
+        {
+            rb.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
+        // limits max fall speed
+        if(rb.velocity.y <= playerSpeed * -5)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, playerSpeed * -5);
+        }
     }
 
 
-    // The player dashes in a direction with great speed. Player cannot collide with enemies while dashing
-    private IEnumerator Dash()
+    private void Dash()
     {
-        var endOfFrame = new WaitForEndOfFrame();
-        float accelr;
-		int holdDir = 1;
-		if (rb.velocity.x < 0) { // Implements unidirectionality of the sprint: player cannot change directions midsprint
-			holdDir = -1;
-		}
-        for (float timer = 0; timer < dashTime; timer += Time.deltaTime)
+        float targetVelocity = lookDirection == 1 ? dashSpeed : -dashSpeed;
+
+        if(dashTimer > 0)
         {
-			accelr = (timer / (dashTime/4));  //Acceleration script. Player reaches full speed 25% through the dash.
-			if (accelr > 1) {
-				accelr = 1;
-			}
-            rb.velocity = new Vector2(Mathf.Abs(rb.velocity.x * dashSpeed * accelr) * holdDir, rb.velocity.y);
-            yield return endOfFrame;
+            dashing = true;
+            rb.velocity = new Vector2(targetVelocity, 0);
+        } else
+        {
+            dashing = false;
+            dashCooldownTimer = dashCooldown;
+            rb.gravityScale = gravity;
         }
-        dodging = null;
     }
 
     public static void ReturnSpear()

@@ -8,7 +8,7 @@ public class Spear : MonoBehaviour, IPointerClickHandler
     Rigidbody2D rb;
     bool impact; // Keeps track of whether or not the spear has already impacted something.
 
-    float angle = 40; // Angle to freeze the spear
+    float angle = 50; // Angle to freeze the spear
     bool rotateSpear = false; // Whether or not the spear should be rotating toward the ground
     bool rotated = false; // Whether or not the spear has been successfully rotated
     bool freeze = true;
