@@ -15,7 +15,10 @@ public class Spear : MonoBehaviour, IPointerClickHandler
     bool canPickUp = false; // Whether or not the player can pick up the spear
     float prevAngle;
     float curAngle;
-    bool tipcollsion; // Checks whether the tip is currently colliding with something (for use by other scripts)
+    float positionError = 0.0003f;
+    float errorTime = 0.5f;
+    float errorTimer = 0;
+    Vector2 position = new Vector2(-1000, 1000);
 
     void Start()
     {
@@ -52,6 +55,8 @@ public class Spear : MonoBehaviour, IPointerClickHandler
                 prevAngle = (transform.rotation.eulerAngles.z + 90) % 360; // Stores the angle of the spear
                 impact = true;
                 freeze = false;
+                position = transform.position;
+                errorTimer = errorTime;
             }
         } else if (Physics2D.Raycast(transform.position, transform.right, 1.15f, LayerMask.GetMask("Ground")) && rotated)
         {
@@ -103,6 +108,24 @@ public class Spear : MonoBehaviour, IPointerClickHandler
         {
             canPickUp = true;
             rb.bodyType = RigidbodyType2D.Static;
+        }
+
+        if(rb.bodyType != RigidbodyType2D.Static && errorTimer > 0)
+        {
+            errorTimer -= Time.deltaTime;
+        }
+        
+        if(rb.bodyType != RigidbodyType2D.Static && errorTimer <= 0 && position.x != -1000)
+        {
+            if(Mathf.Abs(transform.position.x - position.x) < positionError && Mathf.Abs(transform.position.y - position.y) < positionError)
+            {
+                rb.bodyType = RigidbodyType2D.Static;
+                canPickUp = true;
+            } else
+            {
+                position = transform.position;
+                errorTimer = errorTime;
+            }
         }
     }
 
