@@ -34,5 +34,11 @@ public class fallingTrigger : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        //if spear thrown
+        if (collision.gameObject.layer == 6)
+        {
+            rb.isKinematic = false;
+            active = true;
+        }
     }
 }

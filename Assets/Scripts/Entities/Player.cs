@@ -246,12 +246,6 @@ public class Player : MonoBehaviour
         {
             hp.Damage(1);
         }
-
-        //enviormental damage(killboxes for out of bounds or instant death traps)
-        if (collision.gameObject.layer == 11)
-        {
-            hp.Damage(3);
-        }
     }
 
 }
