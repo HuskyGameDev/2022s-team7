@@ -177,6 +177,7 @@ public class Player : MonoBehaviour
     {
         if (jumpButtonPressed)
         {
+            GetComponent<AudioSource>().Play();
             rb.velocity = Vector2.up * jumpVelocity;
             jumpButtonPressed = false;
         }
