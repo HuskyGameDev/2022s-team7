@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     [SerializeField] float spearSpeed;
     private Camera cam;
     [SerializeField] float offset; // The offset amount at which the spear spawns (vertical offset)
+    private static float spearDelay = 0.25f; // The time delay after picking up the spear before it can be thrown again
+    private static float spearDelayTimer = 0;
 
     // ========== MANAGEMENT ========== //
     public playerHealth hp; // instance of the hp on the level linked to the player.
@@ -69,7 +71,7 @@ public class Player : MonoBehaviour
             Dash();
         }
             
-        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && hasSpear) ThrowSpear();
+        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && hasSpear && spearDelayTimer <= 0) ThrowSpear();
 
         //Detects if the button to jump is being held, and updates the boolean.
         if (Input.GetButton("Jump"))
@@ -91,6 +93,7 @@ public class Player : MonoBehaviour
 
         if(dashCooldownTimer > 0) dashCooldownTimer -= Time.deltaTime;
         if (dashTimer > 0) dashTimer -= Time.deltaTime;
+        if (spearDelayTimer > 0) spearDelayTimer -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -218,6 +221,7 @@ public class Player : MonoBehaviour
     public static void ReturnSpear()
     {
         hasSpear = true;
+        spearDelayTimer = spearDelay;
     }
 
     public static Vector2 getPosition()

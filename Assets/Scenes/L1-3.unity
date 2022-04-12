@@ -165,7 +165,7 @@ Transform:
   m_Children:
   - {fileID: 1644396769}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &494523593
 GameObject:
@@ -503,7 +503,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1265702566
 GameObject:
@@ -542,12 +542,12 @@ MonoBehaviour:
   GroundLayer:
     serializedVersion: 2
     m_Bits: 8
-  dashSpeed: 8
-  dashCooldown: 1
-  fallMultiplier: 2.5
-  lowJumpMultiplier: 2
-  jumpVelocity: 8
-  gravity: 2
+  dashSpeed: 12
+  dashCooldown: 0.5
+  fallMultiplier: 2.75
+  lowJumpMultiplier: 5
+  jumpVelocity: 12
+  gravity: 2.75
   spear: {fileID: 7950530868801076126, guid: 7f6e33d18f83e094d8f6a35ff49a9b86, type: 3}
   spearSpeed: 800
   offset: 0.2
@@ -597,7 +597,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!212 &1265702570
 SpriteRenderer:
@@ -663,7 +663,7 @@ Transform:
   m_Children:
   - {fileID: 494523594}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1265702572
 AudioSource:
@@ -16633,7 +16633,7 @@ PrefabInstance:
       objectReference: {fileID: 2056037873}
     - target: {fileID: 1853258658565366786, guid: 314d2fd98ac73aa4fbcfb0c3eb15eb0d, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1853258658565366786, guid: 314d2fd98ac73aa4fbcfb0c3eb15eb0d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -16817,7 +16817,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3335354877901606823, guid: 4f6da8b19d0913e4fb3819152512167b, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3335354877901606823, guid: 4f6da8b19d0913e4fb3819152512167b, type: 3}
       propertyPath: m_LocalPosition.x

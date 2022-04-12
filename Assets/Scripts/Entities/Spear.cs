@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Spear : MonoBehaviour, IPointerClickHandler
+public class Spear : MonoBehaviour
 {
     Rigidbody2D rb;
     bool impact; // Keeps track of whether or not the spear has already impacted something.
@@ -130,9 +130,10 @@ public class Spear : MonoBehaviour, IPointerClickHandler
     }
 
     // Gets called whenever the spear is clicked on
-    public void OnPointerClick(PointerEventData eventData)
+    private void OnMouseDown()
     {
-        if(canPickUp)
+        Debug.Log("CLICKED");
+        if (canPickUp)
         {
             Player.ReturnSpear();
             Destroy(gameObject);
