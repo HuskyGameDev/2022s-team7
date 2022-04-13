@@ -127,6 +127,8 @@ public class Spear : MonoBehaviour
                 errorTimer = errorTime;
             }
         }
+        // can press e to pick up spear remotely
+        PickUpDetection();
     }
 
     // Gets called whenever the spear is clicked on
@@ -138,6 +140,16 @@ public class Spear : MonoBehaviour
             Player.ReturnSpear();
             Destroy(gameObject);
         }
+    }
+
+    private void PickUpDetection(){
+        if(Input.GetKeyDown(KeyCode.E)){
+            Debug.Log("CLICKED");
+            if (canPickUp) {
+                Player.ReturnSpear();
+                Destroy(gameObject);
+            }
+        } 
     }
 
     public bool getTipCollision(GameObject obj)

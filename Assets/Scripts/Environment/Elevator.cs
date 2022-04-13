@@ -11,7 +11,7 @@ public class Elevator : MonoBehaviour
     IEnumerator LoadLevel ()
     {
         transition.SetTrigger("elevate");
-         yield return new WaitForSeconds(1);        
+        yield return new WaitForSeconds(1);              
         sceneFade.SetTrigger("fadeOut");
         yield return new WaitForSeconds(1);        
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
