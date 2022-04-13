@@ -180,6 +180,14 @@ public class Player : MonoBehaviour
     {
         if (jumpButtonPressed)
         {
+			if (!hasSpear) {
+				RaycastHit2D hit = Physics2D.Raycast(transform.position, -transform.up, 1.15f, LayerMask.GetMask("Ground"));
+				if (hit) {
+					if (hit.transform.gameObject.tag == "Spear") {
+						hit.transform.gameObject.SendMessage("playerCollide");
+					}
+				}
+			}
             GetComponent<AudioSource>().Play();
             rb.velocity = Vector2.up * jumpVelocity;
             jumpButtonPressed = false;
@@ -243,6 +251,7 @@ public class Player : MonoBehaviour
             {
                 hp.Damage(3);
             }
+			
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {

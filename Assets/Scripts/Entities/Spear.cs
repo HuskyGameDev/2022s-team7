@@ -22,6 +22,7 @@ public class Spear : MonoBehaviour
 
     void Start()
     {
+		gameObject.tag = "Spear";
         rb = GetComponent<Rigidbody2D>();
         impact = false;
     }
@@ -64,8 +65,8 @@ public class Spear : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
             canPickUp = true;
         }
-        
-    }
+
+		}
 
     private void FixedUpdate()
     {
@@ -151,7 +152,12 @@ public class Spear : MonoBehaviour
             }
         } 
     }
+	public void playerCollide()
+	{
+			Player.ReturnSpear();
+			Destroy(gameObject);
 
+	}
     public bool getTipCollision(GameObject obj)
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right, 1.25f, LayerMask.GetMask("Ground", "Enemy"));
