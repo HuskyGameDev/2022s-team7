@@ -18,9 +18,9 @@ TagManager:
   - Player
   - Enemy
   - NonCollidableEnemy
-  - 
-  - 
-  - 
+  - UIAnimation
+  - killBox
+  - EventSystem
   - 
   - 
   - 
