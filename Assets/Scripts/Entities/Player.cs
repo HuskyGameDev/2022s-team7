@@ -159,6 +159,10 @@ public class Player : MonoBehaviour
         {
             if (hit.collider != null)
             {
+				if (!hasSpear && hit.transform.gameObject.tag == "Spear") {
+					hit.transform.gameObject.SendMessage("playerCollide");
+					hasSpear = true;
+				}
                 return true;
             }
         }

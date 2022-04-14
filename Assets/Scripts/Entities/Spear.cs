@@ -154,9 +154,10 @@ public class Spear : MonoBehaviour
     }
 	public void playerCollide()
 	{
-			Player.ReturnSpear();
+			
 			Destroy(gameObject);
-
+			Player.ReturnSpear();
+	
 	}
     public bool getTipCollision(GameObject obj)
     {
